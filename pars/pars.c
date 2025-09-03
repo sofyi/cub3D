@@ -65,7 +65,13 @@ void	get_path_color(int fd, t_data *data)
 			break ;
 		skip_spc(lin);
 		if (is_color(lin))
+		{
+
+		}
 		else if (is_path)
+		{
+			
+		}
 		
 	}
 }
