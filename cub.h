@@ -17,6 +17,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#define COLORS 1
+#define PATH	2
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif

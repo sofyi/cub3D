@@ -52,6 +52,15 @@ char	*skip_spc(char *str)
 	return (&str[i]);
 }
 
+int	is_color(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[0] == 'F' || str[0] == 'C')
+		return (COLORS);
+	if (str[0])
+}
 void	get_path_color(int fd, t_data *data)
 {
 	char	*lin;
