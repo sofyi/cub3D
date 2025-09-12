@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:23:40 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/03 09:19:16 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/11 15:24:38 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,26 +54,46 @@ int	color_or_paht(char *str)
 	return (-1);
 }
 
-int check_and_put(char c, char *str, t_data *data)
+int check_put_color(char c, char *str, t_data *data)
 {
 	static int i;
+	static int p;
 	int	j;
 
 	j = 0;
-	if (!data->clr || !(c == 'C' || c == 'F') )
-		return (0);
-	while (data->clr[i])
+	if (c == 'N' || c == 'S' || c == 'W' || c == 'E')
 	{
-		if (data->clr[j][0] == c)
-			return (-1);
-		j++;
+		while (data->path_txter[j])
+			if (data->path_txter[j++][0] == c)
+				return (-1);
+		if (p < 4)
+			data->path_txter[p++] = str_dup(str);
 	}
-	data->clr[i] = str;
-	i++;
-	if (i == 2)
-		data->clr[i] = NULL;
+	else if (c == 'C' || c == 'F')
+	{
+			while (data->clr[j])
+				if (data->clr[j++][0] == c)
+					return (-1);
+			if (i < 2)
+				data->clr[i++] = str_dup(str);
+	}
 	return (0);
-	
+}
+
+void	init_data(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	data->clr = malloc(sizeof(int *) * 3);
+	data->path_txter = malloc(sizeof(char *) * 5);
+	if (!data->clr || !data->path_txter)
+		exit (1);
+	while (i < 4)
+		data->clr[i++] = NULL;
+	i = 0;
+	while (i < 5)
+		data->path_txter[i++] = NULL;
 }
 int	get_path_color(int fd, t_data *data)
 {
@@ -82,29 +102,53 @@ int	get_path_color(int fd, t_data *data)
 	int		i;
 
 	i = 0;
-	data->clr = malloc(sizeof(char *) * 3);
-	data->clr[0] = NULL;
-	data->clr[1] = NULL;
-	data->path_txter = NULL;
+	lin = NULL;
 	while (i < 6)
 	{
 		lin = get_next_line(fd);
 		if (!lin)
 			break ;
-		
 		lin = skip_spc(lin);
 		if (lin[0] != '\n')
 		{
 			chk = color_or_paht(lin);
 			if (chk == -1)
 				exit (5);
-			if (check_and_put(chk, lin, data) == -1)
+			if (check_put_color(chk, lin, data) == -1)
 				return (-1);
 			i++;
 		}
+		ft_fre(lin, NULL);
 	}
-	printf("this first coclor [%s] un second [%s]\n", data->clr[0], data->clr[1]);
 	return (0);
+}
+
+int	get_map(t_data *data, int fd)
+{
+	char	*lin;
+	char	*long_str;
+	
+	long_str = NULL;
+	while (1)
+	{
+		lin = get_next_line(fd);
+		if (!lin)
+			break;
+		lin = skip_spc(lin);
+		if (lin[0] != '1' && lin[0] != '\n')
+			return (-1);
+		if (lin[0] != '\n')
+			long_str = ft_strjoin(long_str, lin);		
+		free(lin);
+	}
+	if (!long_str)
+		return (-1);
+	data->map = ft_split(long_str, '\n');
+	int i;
+	i = 0;
+	while (data->map[i])
+		printf("this is line : [%s]\n", data->map[i++]);
+	return(0);
 }
 int	start_pars (char *str, t_data *data)
 {
@@ -115,8 +159,11 @@ int	start_pars (char *str, t_data *data)
 	fd = open(str, O_RDONLY);
 	if (fd < 0)
 		return (write(2, "Erorr: no file \n", 17), 1);
+	init_data(data);
 	if (get_path_color(fd, data) == -1)
 		return (-1);
+	if (get_map(data, fd) == -1)
+	 	return (err_msg("Erorr: map erorr", data), -1);
 	return (0);
 }
 
@@ -127,7 +174,7 @@ int main(int ac, char **av)
 	if (ac == 2)
 	{
 		if(start_pars(av[1], &data))
-			return (1);
+			return (1);	
 	}
 	else
 		write(2, "ERORR: program must take two arg\n", 34);

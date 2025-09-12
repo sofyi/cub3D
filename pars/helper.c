@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 16:05:53 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/08/28 19:08:37 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/11 15:18:26 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,4 +96,38 @@ char	*str_dup(char *s)
 	arr[i] = '\0';
 	return (arr);
 	
+}
+
+void	err_msg(char *str, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	write(2, str, ft_strlen(str));
+	if (!data)
+		return ;
+	while (i < 2)
+		if (data->clr)
+			free(data->clr[i++]);
+	i = 0;
+	while (i < 4)
+		if (data->path_txter)
+			free(data->path_txter[i++]);
+	free(data->clr);
+	free(data->path_txter);
+	
+}
+
+void	ft_fre(void *lin, char **str)
+{
+	int i;
+	
+	i = 0;
+	if (lin)
+		free(lin);
+	if (str)
+	{
+		while (str[i])
+			free(str[i++]);
+	}
 }
