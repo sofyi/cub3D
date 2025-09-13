@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:23:40 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/11 15:24:38 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/13 19:25:19 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,10 +144,6 @@ int	get_map(t_data *data, int fd)
 	if (!long_str)
 		return (-1);
 	data->map = ft_split(long_str, '\n');
-	int i;
-	i = 0;
-	while (data->map[i])
-		printf("this is line : [%s]\n", data->map[i++]);
 	return(0);
 }
 int	start_pars (char *str, t_data *data)
@@ -178,4 +174,5 @@ int main(int ac, char **av)
 	}
 	else
 		write(2, "ERORR: program must take two arg\n", 34);
+	// matensy thawele mn char ll int f color ;
 }
