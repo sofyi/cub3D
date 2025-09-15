@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 18:27:07 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/11 15:19:14 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/15 10:53:25 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 typedef struct data_file_cub
 {
 	char	**map;
-	char	**clr;
+	int		**clr;
 	char	**path_txter;
 }	t_data;
 

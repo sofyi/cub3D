@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:23:40 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/13 19:25:19 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/15 11:32:10 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,15 @@ int	color_or_paht(char *str)
 	return (-1);
 }
 
+
 int check_put_color(char c, char *str, t_data *data)
 {
 	static int i;
 	static int p;
 	int	j;
-
+	int	k;
+	
+	// printf("data [%c]\n",);
 	j = 0;
 	if (c == 'N' || c == 'S' || c == 'W' || c == 'E')
 	{
@@ -71,11 +74,28 @@ int check_put_color(char c, char *str, t_data *data)
 	}
 	else if (c == 'C' || c == 'F')
 	{
-			while (data->clr[j])
-				if (data->clr[j++][0] == c)
-					return (-1);
-			if (i < 2)
-				data->clr[i++] = str_dup(str);
+		data->clr[i][0] = c;
+		str++;
+		j = 1;
+		while(j < 4)
+		{
+			str = skip_spc(str);
+			k = 0;
+			while (str[k] && str[k] != ',' && str[k] != '\n')
+				k++;
+			if (str[k])
+			{
+				str[k] = '\0';
+				data->clr[i][j] = atoi(str);
+				str[k] = ',';
+				while (*str != ',' && *str)
+					str++;
+				if (*str == ',')
+					str++;
+			}
+			j++;
+		}
+		i++;
 	}
 	return (0);
 }
@@ -86,11 +106,13 @@ void	init_data(t_data *data)
 
 	i = 0;
 	data->clr = malloc(sizeof(int *) * 3);
+	while (i < 2)
+		data->clr[i++] = malloc(sizeof(int) * 4);
+	data->clr[i] = NULL;
+	i = 0;
 	data->path_txter = malloc(sizeof(char *) * 5);
 	if (!data->clr || !data->path_txter)
 		exit (1);
-	while (i < 4)
-		data->clr[i++] = NULL;
 	i = 0;
 	while (i < 5)
 		data->path_txter[i++] = NULL;
@@ -109,7 +131,7 @@ int	get_path_color(int fd, t_data *data)
 		if (!lin)
 			break ;
 		lin = skip_spc(lin);
-		if (lin[0] != '\n')
+		if (lin[0] != '\n' && lin[0])
 		{
 			chk = color_or_paht(lin);
 			if (chk == -1)
@@ -139,7 +161,7 @@ int	get_map(t_data *data, int fd)
 			return (-1);
 		if (lin[0] != '\n')
 			long_str = ft_strjoin(long_str, lin);		
-		free(lin);
+		// free(lin);
 	}
 	if (!long_str)
 		return (-1);
@@ -174,5 +196,14 @@ int main(int ac, char **av)
 	}
 	else
 		write(2, "ERORR: program must take two arg\n", 34);
-	// matensy thawele mn char ll int f color ;
+	int i = 0;
+	int k = 0;
+	while (data.clr[i])
+	{
+		k = 0;
+		while (k < 4)
+			printf ("data[%d] ",data.clr[i][k++]);
+		printf ("\n");
+		i++;
+	}
 }
