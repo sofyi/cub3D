@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/20 15:00:39 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/20 15:46:48 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/20 15:49:12 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,10 @@ int	get_map(t_data *data, int fd)
 int start_check_mp(t_data *data)
 {
 	int	i;
+	int	j;
 
+	j = 0;
 	i = 0;
-	while (data->map[i])
-		printf ("%s\n", data->map[i++]);
+
 	return (0);
 }
