@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 18:27:07 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/15 10:53:25 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/20 15:21:16 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,14 @@ int		serch(char *str, char c);
 void	err_msg(char *str, t_data *data);
 void	ft_fre(void *lin, char **str);
 char	**ft_split(char *str, char sep);
+/////////////////////////////-----check----------//////////////
+int	check_color(char *str, t_data *data, char c, int i);
+int	color_or_paht(char *str);
+int	dot_cub(char *str);
+int S_W_E_N(char c);
+char	*skip_spc(char *str);
+/////////////////////////-----------maps------------///////////
+int	get_map(t_data *data, int fd);
+int	start_check_mp(t_data *data);
+int	how_many_pl(char *p, char *str, int *count);
 #endif

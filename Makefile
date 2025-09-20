@@ -1,5 +1,6 @@
 NAME = cub3D
-SRC = ./pars/pars.c ./pars/get_next_l.c ./pars/helper.c ./pars/helper2.c
+SRC = ./pars/pars.c ./pars/get_next_l.c ./pars/helper.c \
+./pars/helper2.c ./pars/check.c ./pars/map_tool.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

@@ -6,27 +6,11 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:23:40 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/15 11:32:10 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/20 15:25:15 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../cub.h"
-
-int	dot_cub(char *str)
-{
-	int	i;
-	
-	i = ft_strlen(str);
-	i--;
-	while (i > 0 && str[i] != '.')
-		i--;
-	if (i == 0 || str[i - 1] == '/')
-		return (0);
-	if (str[i] == '.' && str_cmp(&str[i + 1], "cub"))
-		return (1);
-	return (0);
-	
-}
 
 char	*skip_spc(char *str)
 {
@@ -38,33 +22,16 @@ char	*skip_spc(char *str)
 	return (&str[i]);
 }
 
-int	color_or_paht(char *str)
-{
-	char	c;
 
-	if (!str[0] || str[0] == '\n')
-		return (0);
-	if (str[0] == 'F' || str[0] == 'C')
-		return (str[0]);
-	c = str[2];
-	str[2] = '\0';
-	if (str_cmp("NO", str) || str_cmp("SO", str) ||
-		str_cmp("WE", str) || str_cmp("EA", str))
-		return (str[2] = c, str[0]);
-	return (-1);
-}
-
-
-int check_put_color(char c, char *str, t_data *data)
+int check_put(char c, char *str, t_data *data)
 {
 	static int i;
 	static int p;
-	int	j;
-	int	k;
+	int		j;
 	
 	// printf("data [%c]\n",);
 	j = 0;
-	if (c == 'N' || c == 'S' || c == 'W' || c == 'E')
+	if (S_W_E_N(c))
 	{
 		while (data->path_txter[j])
 			if (data->path_txter[j++][0] == c)
@@ -74,27 +41,8 @@ int check_put_color(char c, char *str, t_data *data)
 	}
 	else if (c == 'C' || c == 'F')
 	{
-		data->clr[i][0] = c;
-		str++;
-		j = 1;
-		while(j < 4)
-		{
-			str = skip_spc(str);
-			k = 0;
-			while (str[k] && str[k] != ',' && str[k] != '\n')
-				k++;
-			if (str[k])
-			{
-				str[k] = '\0';
-				data->clr[i][j] = atoi(str);
-				str[k] = ',';
-				while (*str != ',' && *str)
-					str++;
-				if (*str == ',')
-					str++;
-			}
-			j++;
-		}
+		if(check_color(str, data, c, i) < 1)
+			return (-1);
 		i++;
 	}
 	return (0);
@@ -135,9 +83,10 @@ int	get_path_color(int fd, t_data *data)
 		{
 			chk = color_or_paht(lin);
 			if (chk == -1)
-				exit (5);
-			if (check_put_color(chk, lin, data) == -1)
-				return (-1);
+				return (printf("erorr in color_or_path"),-1);
+			printf(" [%s] ", lin);
+			if (check_put(chk, lin, data) == -1)
+				return (printf ("erorr in puting : "),-1);
 			i++;
 		}
 		ft_fre(lin, NULL);
@@ -145,29 +94,28 @@ int	get_path_color(int fd, t_data *data)
 	return (0);
 }
 
-int	get_map(t_data *data, int fd)
+int	how_many_pl(char *p, char *str, int *count)
 {
-	char	*lin;
-	char	*long_str;
-	
-	long_str = NULL;
-	while (1)
+	int	i;
+
+	i = 0;
+	while (str[i] != '\n' && str[i] != '\0')
 	{
-		lin = get_next_line(fd);
-		if (!lin)
-			break;
-		lin = skip_spc(lin);
-		if (lin[0] != '1' && lin[0] != '\n')
+		str = skip_spc(str);
+		if (S_W_E_N(str[i]))
+		{
+			*p = str[i];
+			(*count)++;
+		}
+		if (str[i] != '0' && str[i] != '1' && S_W_E_N(str[i]) == 0 && !(str[i] <= 32))
 			return (-1);
-		if (lin[0] != '\n')
-			long_str = ft_strjoin(long_str, lin);		
-		// free(lin);
+		i++;
 	}
-	if (!long_str)
+	if (*count > 1)
 		return (-1);
-	data->map = ft_split(long_str, '\n');
-	return(0);
+	return (0);
 }
+
 int	start_pars (char *str, t_data *data)
 {
 	int		fd;
@@ -179,8 +127,8 @@ int	start_pars (char *str, t_data *data)
 		return (write(2, "Erorr: no file \n", 17), 1);
 	init_data(data);
 	if (get_path_color(fd, data) == -1)
-		return (-1);
-	if (get_map(data, fd) == -1)
+		return (printf("coco"),-1);
+	if (get_map(data, fd) < 0 || start_check_mp(data) < 0)
 	 	return (err_msg("Erorr: map erorr", data), -1);
 	return (0);
 }
@@ -196,14 +144,14 @@ int main(int ac, char **av)
 	}
 	else
 		write(2, "ERORR: program must take two arg\n", 34);
-	int i = 0;
-	int k = 0;
-	while (data.clr[i])
-	{
-		k = 0;
-		while (k < 4)
-			printf ("data[%d] ",data.clr[i][k++]);
-		printf ("\n");
-		i++;
-	}
+	// int i = 0;
+	// int k = 0;
+	// while (data.clr[i])
+	// {
+	// 	k = 0;
+	// 	while (k < 4)
+	// 		printf ("data[%d] ",data.clr[i][k++]);
+	// 	printf ("\n");
+	// 	i++;
+	// }
 }
