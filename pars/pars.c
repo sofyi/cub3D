@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:23:40 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/20 15:25:15 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/09/20 15:46:08 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int check_put(char c, char *str, t_data *data)
 	}
 	else if (c == 'C' || c == 'F')
 	{
-		if(check_color(str, data, c, i) < 1)
+		if(check_color(str, data, c, i) < 0)
 			return (-1);
 		i++;
 	}
@@ -83,10 +83,9 @@ int	get_path_color(int fd, t_data *data)
 		{
 			chk = color_or_paht(lin);
 			if (chk == -1)
-				return (printf("erorr in color_or_path"),-1);
-			printf(" [%s] ", lin);
+				return (-1);
 			if (check_put(chk, lin, data) == -1)
-				return (printf ("erorr in puting : "),-1);
+				return (-1);
 			i++;
 		}
 		ft_fre(lin, NULL);
