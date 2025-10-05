@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 15:32:46 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/20 15:45:35 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/10/05 13:20:13 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,37 +51,59 @@ int	color_or_paht(char *str)
 	return (-1);
 }
 
+int	is_num(char c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
+}
+
+int	check_lin(char *str)
+{
+	//printf("error[%s]\n",str);
+	str = skip_spc(str);
+	while (*str && *str >= '0' && *str <= '9')
+		str++;
+	str = skip_spc(str);
+	if (*str != '\0' && *str != '\n')
+		return (-1);
+	return (0);
+
+}
+
 int	check_color(char *str, t_data *data, char c, int i)
 {
+	char **arr;
 	int	j;
 	int	k;
-	char sv;
 	
 	j = 0;
-	data->clr[i][j++] = c;
-	str++;
-	while(str[0] != '\n' && j < 4)
+	arr = ft_split(str, ',');
+	while (arr[j])
+		j++;
+	if (j > 3)
+		return (-1);
+	j = 0;
+	k = 0;
+	data->clr[i][k++] = c;
+	while (arr[0][j])
 	{
-		if (j == 4)
-			break;
-		str = skip_spc(str);
-		k = 0;
-		while (str[k] && str[k] != ',' && str[k] != '\n')
-			k++;
-		if (str[k])
+		if (arr[0][j] == c)
 		{
-			sv = str[k];
-			str[k] = '\0';
-			data->clr[i][j] = atoi(str);
-			str[k] = sv;
-			while (*str != ',' && *str != '\n')
-				str++;
-			if (*str == ',')
-				str++;
+			arr[0][j] = ' ';
+			break;
 		}
 		j++;
 	}
-	if ((j == 4 && *str != '\n') || (j < 4 && *str == '\n'))
-		return (-1);
+	j = 0;
+	while (arr[j])
+	{
+		if (check_lin(arr[j]))
+			return (-1);
+		data->clr[i][k] = atoi(arr[j]);	
+		j++;
+		k++;
+	}
 	return (0);
 }
+

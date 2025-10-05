@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:23:40 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/09/20 15:46:08 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/10/05 15:34:23 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,13 @@ char	*skip_spc(char *str)
 	return (&str[i]);
 }
 
-
 int check_put(char c, char *str, t_data *data)
 {
 	static int i;
 	static int p;
 	int		j;
 	
-	// printf("data [%c]\n",);
+
 	j = 0;
 	if (S_W_E_N(c))
 	{
@@ -37,7 +36,10 @@ int check_put(char c, char *str, t_data *data)
 			if (data->path_txter[j++][0] == c)
 				return (-1);
 		if (p < 4)
+		{
+			if (check_path(str))
 			data->path_txter[p++] = str_dup(str);
+		}
 	}
 	else if (c == 'C' || c == 'F')
 	{
@@ -48,23 +50,33 @@ int check_put(char c, char *str, t_data *data)
 	return (0);
 }
 
-void	init_data(t_data *data)
+int	init_data(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	data->clr = malloc(sizeof(int *) * 3);
+	if (!data->clr)
+		return (-1);
 	while (i < 2)
-		data->clr[i++] = malloc(sizeof(int) * 4);
+	{
+		data->clr[i] = malloc(sizeof(int) * 4);
+		if (!data->clr[i])
+			return (-1);
+		i++;
+	}
 	data->clr[i] = NULL;
-	i = 0;
 	data->path_txter = malloc(sizeof(char *) * 5);
+	if (!data->path_txter)
+		return (-1);
 	if (!data->clr || !data->path_txter)
-		exit (1);
+		return (-1);
 	i = 0;
 	while (i < 5)
 		data->path_txter[i++] = NULL;
+	return (0);
 }
+
 int	get_path_color(int fd, t_data *data)
 {
 	char	*lin;
@@ -72,7 +84,6 @@ int	get_path_color(int fd, t_data *data)
 	int		i;
 
 	i = 0;
-	lin = NULL;
 	while (i < 6)
 	{
 		lin = get_next_line(fd);
@@ -88,12 +99,12 @@ int	get_path_color(int fd, t_data *data)
 				return (-1);
 			i++;
 		}
-		ft_fre(lin, NULL);
+		
 	}
 	return (0);
 }
 
-int	how_many_pl(char *p, char *str, int *count)
+int	 how_many_pl(char *p, char *str, int *count)
 {
 	int	i;
 
@@ -114,10 +125,46 @@ int	how_many_pl(char *p, char *str, int *count)
 		return (-1);
 	return (0);
 }
+char **get_tst_map(char **map)
+{
+	int	i;
+	int j;
+	int max;
+	
+	i = 0;
+	max = 0;
+	j = 0;
+	while (map[i])
+	{
+		j = ft_strlen(map[i]);
+		if (j > max)
+			max = j;
+		i++;
+	}		
+	char **arr = malloc(sizeof(char *) * (i+1));
+	arr[i] = NULL;
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		arr[i] = malloc(max + 1);
+		while (map[i][j])
+		{
+			arr[i][j] = map[i][j];
+			j++;
+		}
+		while (j < max)
+			arr[i][j++] = ' ';
+		arr[i][j] = '\0';
+		i++;
+	}
+	return (arr);
+}
 
 int	start_pars (char *str, t_data *data)
 {
 	int		fd;
+	char	**tst_map;
 	
 	if (dot_cub(str) == 0)
 		return(write(2, "ERORR FILE\n", 12), 1);
@@ -127,8 +174,15 @@ int	start_pars (char *str, t_data *data)
 	init_data(data);
 	if (get_path_color(fd, data) == -1)
 		return (printf("coco"),-1);
-	if (get_map(data, fd) < 0 || start_check_mp(data) < 0)
+	int j = 0;
+	while (j < 4)
+		 printf ("[%d]", data->clr[0][j++]);
+	 exit (0);
+	if (get_map(data, fd) < 0 )
 	 	return (err_msg("Erorr: map erorr", data), -1);
+	tst_map = get_tst_map(data->map);
+	if (check_map(tst_map) < 0)
+	 	return (err_msg("EErorr: map erorr", data), -1);
 	return (0);
 }
 
@@ -143,14 +197,4 @@ int main(int ac, char **av)
 	}
 	else
 		write(2, "ERORR: program must take two arg\n", 34);
-	// int i = 0;
-	// int k = 0;
-	// while (data.clr[i])
-	// {
-	// 	k = 0;
-	// 	while (k < 4)
-	// 		printf ("data[%d] ",data.clr[i][k++]);
-	// 	printf ("\n");
-	// 	i++;
-	// }
 }
