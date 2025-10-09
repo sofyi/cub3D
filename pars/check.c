@@ -6,7 +6,7 @@
 /*   By: slamhaou <slamhaou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 15:32:46 by slamhaou          #+#    #+#             */
-/*   Updated: 2025/10/05 13:20:13 by slamhaou         ###   ########.fr       */
+/*   Updated: 2025/10/08 12:23:31 by slamhaou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,21 @@ int	check_lin(char *str)
 	return (0);
 
 }
-
+int	count_coma(char *str)
+{
+	int	i;
+	int counter;
+	
+	i = 0;
+	counter = 0;
+	while (str[i])
+	{
+		if (str[i] == ',')
+			counter++;
+		i++;
+	}
+	return (counter);
+}
 int	check_color(char *str, t_data *data, char c, int i)
 {
 	char **arr;
@@ -78,6 +92,8 @@ int	check_color(char *str, t_data *data, char c, int i)
 	int	k;
 	
 	j = 0;
+	if (count_coma(str) > 2)
+		return (-1);
 	arr = ft_split(str, ',');
 	while (arr[j])
 		j++;
@@ -101,6 +117,8 @@ int	check_color(char *str, t_data *data, char c, int i)
 		if (check_lin(arr[j]))
 			return (-1);
 		data->clr[i][k] = atoi(arr[j]);	
+		if (data->clr[i][k] > 255 || data->clr[i][k] < 0)
+			return (-1);
 		j++;
 		k++;
 	}
